@@ -1,0 +1,14 @@
+STRINGTABLE Ostack
+{
+	Ostack							"Can Stack Object";
+
+	STACK_BASE_COUNT		"Base Count";
+	STACK_BASE_LENGTH		"Base Length";
+	STACK_BASE_PATH			"Base Path";
+	STACK_ROWS_COUNT		"Max. Rows";
+	STACK_ROWS_HEIGHT		"Row Height";
+	STACK_RANDOM_SEED		"Seed";
+	STACK_RANDOM_ROT		"Random Rotation";
+	STACK_RANDOM_POS		"Random Position";
+	STACK_CMD_FITHEIGHT	"Fit Height";
+}
