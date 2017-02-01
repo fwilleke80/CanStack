@@ -1,0 +1,4 @@
+0.8
+- First version
+- Support for simple stacks
+- Support for stacks on splines (experimental)
