@@ -4,6 +4,7 @@
 
 #include "c4d.h"
 #include "lib_splinehelp.h"
+#include "ostack.h"
 
 
 /*
@@ -49,6 +50,19 @@ struct StackParameters
 	/// Default constructor
 	StackParameters() : _baseCount(0), _baseLength(0.0), _rowCount(0), _rowHeight(0.0), _randomSeed(0), _randomPos(0.0), _randomRot(0.0), _basePath(nullptr)
 	{ }
+	
+	// Constructor from BaseContainer
+	StackParameters(const BaseContainer &bc, const BaseDocument &doc)
+	{
+		_baseCount = bc.GetInt32(STACK_BASE_COUNT);
+		_baseLength = bc.GetFloat(STACK_BASE_LENGTH);
+		_rowCount = bc.GetInt32(STACK_ROWS_COUNT);
+		_rowHeight = bc.GetFloat(STACK_ROWS_HEIGHT);
+		_randomSeed = bc.GetInt32(STACK_RANDOM_SEED);
+		_randomPos = bc.GetFloat(STACK_RANDOM_POS);
+		_randomRot = bc.GetFloat(STACK_RANDOM_ROT);
+		_basePath = static_cast<SplineObject*>(bc.GetObjectLink(STACK_BASE_PATH, &doc));
+	}
 	
 	/// Copy constructor
 	StackParameters(const StackParameters &src) : _baseCount(src._baseCount), _baseLength(src._baseLength), _rowCount(src._rowCount), _rowHeight(src._rowHeight), _randomSeed(src._randomSeed), _randomPos(src._randomPos), _randomRot(src._randomRot), _basePath(src._basePath)

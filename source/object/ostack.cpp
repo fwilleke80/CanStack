@@ -167,15 +167,7 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 		return childClone;
 	
 	// Get stack parameters from container
-	StackParameters params;
-	params._baseCount = bc->GetInt32(STACK_BASE_COUNT);
-	params._baseLength = bc->GetFloat(STACK_BASE_LENGTH);
-	params._rowHeight = bc->GetFloat(STACK_ROWS_HEIGHT);
-	params._rowCount = bc->GetInt32(STACK_ROWS_COUNT);
-	params._randomSeed = bc->GetInt32(STACK_RANDOM_SEED);
-	params._randomPos = bc->GetFloat(STACK_RANDOM_POS);
-	params._randomRot = bc->GetFloat(STACK_RANDOM_ROT);
-	params._basePath = static_cast<SplineObject*>(bc->GetObjectLink(STACK_BASE_PATH, doc));
+	StackParameters params(*bc, *doc);
 	
 	// Initialize stack
 	if (!_stackGenerator.InitStack(params))
