@@ -81,7 +81,7 @@ Bool CanStackGenerator::GenerateStack()
 			if (_params._basePath)
 			{
 				// Calculate item's relative offset on the spline
-				Float relOffset = _splineLengthData->UniformToNatural((Float)itemIndex * relDistance);
+				Float relOffset = _splineLengthData->UniformToNatural((relDistance * itemIndex) + (relDistance * 0.5 * rowIndex));
 
 				// Calculate position along spline
 				item->off = _params._basePath->GetSplinePoint(relOffset) + Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, _random.Get11() * _params._randomPos);
