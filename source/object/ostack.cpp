@@ -192,5 +192,5 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 // Register object plugin
 Bool RegisterStackObject()
 {
-	return RegisterObjectPlugin(ID_STACK, GeLoadString(IDS_STACK), OBJECT_GENERATOR|OBJECT_INPUT, StackObject::Alloc, "Ostack", AutoBitmap("ostack"), 0);
+	return RegisterObjectPlugin(ID_STACK, GeLoadString(IDS_STACK), OBJECT_GENERATOR|OBJECT_INPUT, StackObject::Alloc, "Ostack", AutoBitmap("ostack.tif"), 0);
 }
