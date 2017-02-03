@@ -1,5 +1,5 @@
-#ifndef STACKGENERATOR_H__
-#define STACKGENERATOR_H__
+#ifndef CANSTACKGENERATOR_H__
+#define CANSTACKGENERATOR_H__
 
 
 #include "c4d.h"
@@ -20,19 +20,19 @@
         =           =         =       =     =
 			 15          10         6       3     1
  
- 	Notice:
- 	- Maximum rowCount is always == baseCount
- 	- itemCount per Row is always itemCount of previous row - 1
-  - Total number of items is GaussSum(baseCount)
+	Notice:
+	- Maximum rowCount is always == baseCount
+	- itemCount per Row is always itemCount of previous row - 1
+	- Total number of items is GaussSum(baseCount)
  */
 
 
 /// MatrixArray is BaseArray of Matrix. It holds a matrix for each item in a row
-typedef maxon::BaseArray<Matrix> MatrixArray;
+typedef maxon::BaseArray<Matrix> StackItemArray;
 
 
 /// StackRowArray is a BaseArray of MatrixArray. It holds multiple rows that form the stack.
-typedef maxon::BaseArray<MatrixArray> StackRowArray;
+typedef maxon::BaseArray<StackItemArray> StackRowArray;
 
 
 /// Structure that holds the parameters for a stack
@@ -114,4 +114,4 @@ private:
 };
 
 
-#endif // STACKGENERATOR_H__
+#endif // CANSTACKGENERATOR_H__

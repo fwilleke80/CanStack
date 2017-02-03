@@ -72,7 +72,7 @@ Bool CanStackGenerator::GenerateStack()
 		// Iterate items in row
 		// Create positions for current row
 		Int32 itemIndex = 0;
-		for (MatrixArray::Iterator item = row->Begin(); item != row->End(); ++item, itemIndex++)
+		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item, itemIndex++)
 		{
 			// Compute rotation matrix & set to item
 			*item = HPBToMatrix(Vector(_random.Get11() * _params._randomRot, 0.0, 0.0), ROTATIONORDER_HPB);
@@ -110,7 +110,7 @@ BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, co
 	for (StackRowArray::Iterator row = _array.Begin(); row != _array.End(); ++row)
 	{
 		// Iterate items in row
-		for (MatrixArray::Iterator item = row->Begin(); item != row->End(); ++item)
+		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item)
 		{
 			// Create clone of original object
 			BaseObject *clone = static_cast<BaseObject*>(originalObject->GetClone(COPYFLAGS_0, nullptr));
