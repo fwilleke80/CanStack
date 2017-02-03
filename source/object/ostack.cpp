@@ -1,5 +1,6 @@
 #include "c4d.h"
 #include "canstackgenerator.h"
+#include "ws_boundingbox.h"
 #include "c4d_symbols.h"
 #include "ostack.h"
 #include "main.h"
@@ -93,6 +94,13 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 				{
 					// Get child's bounding box radius
 					Vector rad = child->GetRad();
+					
+					// If radius invalid
+					if (rad.IsZero())
+					{
+						// Calculate radius ourselves
+						rad = CalculateBoundingBox(child).GetRad();
+					}
 
 					// If radius is valid
 					if (rad.IsNotZero())
