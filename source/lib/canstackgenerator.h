@@ -27,8 +27,15 @@
  */
 
 
+/// Structure that holds the data for one item in a stack
+struct StackItem
+{
+	Matrix mg;
+};
+
+
 /// MatrixArray is BaseArray of Matrix. It holds a matrix for each item in a row
-typedef maxon::BaseArray<Matrix> StackItemArray;
+typedef maxon::BaseArray<StackItem> StackItemArray;
 
 
 /// StackRowArray is a BaseArray of MatrixArray. It holds multiple rows that form the stack.

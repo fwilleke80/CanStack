@@ -75,7 +75,7 @@ Bool CanStackGenerator::GenerateStack()
 		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item, itemIndex++)
 		{
 			// Compute rotation matrix & set to item
-			*item = HPBToMatrix(Vector(_random.Get11() * _params._randomRot, 0.0, 0.0), ROTATIONORDER_HPB);
+			item->mg = HPBToMatrix(Vector(_random.Get11() * _params._randomRot, 0.0, 0.0), ROTATIONORDER_HPB);
 			
 			// Compute matrix offset
 			if (_params._basePath)
@@ -84,13 +84,13 @@ Bool CanStackGenerator::GenerateStack()
 				Float relOffset = _splineLengthData->UniformToNatural((relDistance * itemIndex) + (relDistance * 0.5 * rowIndex));
 
 				// Calculate position along spline
-				item->off = _params._basePath->GetSplinePoint(relOffset) + Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, _random.Get11() * _params._randomPos);
-				*item = splineMg * *item;
+				item->mg.off = _params._basePath->GetSplinePoint(relOffset) + Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, _random.Get11() * _params._randomPos);
+				item->mg = splineMg * item->mg;
 			}
 			else
 			{
 				// Calculate item's position
-				item->off = Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, distance * itemIndex + distance * rowIndex * 0.5 + _random.Get11() * _params._randomPos);
+				item->mg.off = Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, distance * itemIndex + distance * rowIndex * 0.5 + _random.Get11() * _params._randomPos);
 			}
 		}
 	}
@@ -119,9 +119,9 @@ BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, co
 			
 			// Set clone position according to item in stack data
 			if (_params._basePath)
-				clone->SetMg(*item);
+				clone->SetMg(item->mg);
 			else
-				clone->SetMl(*item);
+				clone->SetMl(item->mg);
 			
 			// Insert clone as last child under parent Null
 			clone->InsertUnderLast(resultParent);
