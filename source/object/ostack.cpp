@@ -98,8 +98,13 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 					// If radius invalid
 					if (rad.IsZero())
 					{
+						// Get a temporary CSTO clone
+						Int32 objectType = 0;
+						AutoFree<BaseObject> pointObject;
+						pointObject.Set(GetCurrentStateToObject(child, objectType));
+						
 						// Calculate radius ourselves
-						rad = CalculateBoundingBox(child).GetRad();
+						rad = CalculateBoundingBox(pointObject).GetRad();
 					}
 
 					// If radius is valid
@@ -166,9 +171,18 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 
 	// Get clone of child object
 	Bool dirty = false;
-	BaseObject *childClone = op->GetAndCheckHierarchyClone(hh, child, HIERARCHYCLONEFLAGS_0, &dirty, nullptr, false);
+	BaseObject *childClone = op->GetAndCheckHierarchyClone(hh, child, HIERARCHYCLONEFLAGS_ASIS, &dirty, nullptr, false);
 	if (!childClone)
 		return nullptr;
+	
+	// Object dirty
+	dirty |= op->IsDirty(DIRTYFLAGS_MATRIX|DIRTYFLAGS_DATA);
+	
+	// Linked spline dirty
+	if (bc->GetObjectLink(STACK_BASE_PATH, doc))
+	{
+		dirty |= bc->GetObjectLink(STACK_BASE_PATH, doc)->IsDirty(DIRTYFLAGS_ALL);
+	}
 	
 	// Return cache if already built
 	if (!dirty)
@@ -192,6 +206,8 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 	
 	// Name parent result object
 	result->SetName(GeLoadString(IDS_STACK));
+	
+	result->Message(MSG_UPDATE);
 	
 	return result;
 }

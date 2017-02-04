@@ -106,6 +106,14 @@ BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, co
 	if (!resultParent)
 		return nullptr;
 	
+	BaseObject* objectToClone = nullptr;
+	
+	// We'll clone either the original child object, or - if child is a render instance - the object that's linked
+	if (originalObject->GetType() == Oinstance && originalObject->GetDataInstance()->GetBool(INSTANCEOBJECT_RENDERINSTANCE))
+		objectToClone = originalObject->GetDataInstance()->GetObjectLink(INSTANCEOBJECT_LINK, originalObject->GetDocument());
+	else
+		objectToClone = originalObject;
+	
 	// Iterate rows in stack
 	for (StackRowArray::Iterator row = _array.Begin(); row != _array.End(); ++row)
 	{
@@ -113,7 +121,7 @@ BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, co
 		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item)
 		{
 			// Create clone of original object
-			BaseObject *clone = static_cast<BaseObject*>(originalObject->GetClone(COPYFLAGS_0, nullptr));
+			BaseObject *clone = static_cast<BaseObject*>(objectToClone->GetClone(COPYFLAGS_0, nullptr));
 			if (!clone)
 				return nullptr;
 			

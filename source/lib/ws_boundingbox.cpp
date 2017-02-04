@@ -1,14 +1,14 @@
-#include "ws_boundingbox.h"
+	#include "ws_boundingbox.h"
 
-BaseObject *GetCurrentStateToObject(BaseObject *op)
+BaseObject *GetCurrentStateToObject(BaseObject *inputObject, Int32 &nodeType)
 {
 	// Create AliasTranslate
 	AutoAlloc<AliasTrans> aliasTrans;
-	if (!aliasTrans || !aliasTrans->Init(op->GetDocument()))
+	if (!aliasTrans || !aliasTrans->Init(inputObject->GetDocument()))
 		return nullptr;
 	
 	// Create clone of op. We only need this for the modeling command.
-	BaseObject *tmpOp = static_cast<BaseObject*>(op->GetClone(COPYFLAGS_0, aliasTrans));
+	BaseObject *tmpOp = static_cast<BaseObject*>(inputObject->GetClone(COPYFLAGS_0, aliasTrans));
 	if (!tmpOp)
 		return nullptr;
 	
@@ -38,38 +38,50 @@ BaseObject *GetCurrentStateToObject(BaseObject *op)
 		return nullptr;
 	
 	// Get result
-	BaseObject *res = static_cast<BaseObject*>(mcd.result->GetIndex(0));
+	BaseObject *resultObject = static_cast<BaseObject*>(mcd.result->GetIndex(0));
 	
 	// Set original matrix
-	if (res)
-		res->SetMg(op->GetMg());
+	if (resultObject)
+		resultObject->SetMg(inputObject->GetMg());
+	
+	// Set type of result object
+	nodeType = resultObject->GetType();
 
-	return res;
+	// Return result object
+	return resultObject;
 }
 
 
-MinMax CalculateBoundingBox(BaseObject *op)
+MinMax CalculateBoundingBox(BaseObject *inputObject)
 {
-	if (!op)
+	// Good practice: Check for nullptr
+	if (!inputObject)
 		return MinMax();
-
-	PolygonObject *polyObj = static_cast<PolygonObject*>(GetCurrentStateToObject(op));
-	if (!polyObj)
+	
+	// Cancel if object is neither polygon nor spline
+	Int32 inputType = inputObject->GetType();
+	if (!(inputType == Opolygon || inputType == Ospline))
 		return MinMax();
-
+	
+	// Cast to PointObject
+	PointObject *pointObject = static_cast<PointObject*>(inputObject);
+	
+	// Initialize bounding box
 	MinMax boundingBox;
 	boundingBox.Init();
-
-	const Vector *padr = polyObj->GetPointR();
-	Int32 pointCount = polyObj->GetPointCount();
 	
+	// Get read-only points array and point count
+	Int32 pointCount = pointObject->GetPointCount();
+	const Vector *padr = pointObject->GetPointR();
+	if (!padr)
+		return MinMax();
+	
+	// Iterate points and extend bounding box
 	for (Int32 i = 0; i < pointCount; i++)
 	{
 		boundingBox.AddPoint(padr[i]);
 	}
 	
-	// TODO: Remove debug print
-	//GePrint("Bounding box of " + op->GetName() + "(" + polyObj->GetName() + "): Mp=" + String::VectorToString(boundingBox.GetMp()) + "; Rad=" + String::VectorToString(boundingBox.GetRad()));
-	
+	// Return bounding box
 	return boundingBox;
 }
