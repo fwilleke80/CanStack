@@ -17,6 +17,11 @@ BaseObject *GetCurrentStateToObject(BaseObject *inputObject, Int32 &nodeType);
 /// @return The bounding box in object space
 MinMax CalculateBoundingBox(BaseObject *inputObject);
 
+/// Calculates the bounding boxes for all objects in a hierarchy and adds them all together
+/// @param[in] inputObject The parent object of the hierarchy. This object and all its children will be iterated.
+/// @return The bounding box for all objects in the hierarchy
+MinMax CalculateHierarchyBoundingBox(BaseObject *inputObject);
+
 /// Recursively touch all child objects of an object
 /// @param[in] startObject The parent object of the hierarchy that should be touched. All child objects (not startObject itself!) will be touched.
 void TouchAllChildren(BaseObject *startObject);

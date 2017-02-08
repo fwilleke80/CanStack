@@ -88,6 +88,30 @@ MinMax CalculateBoundingBox(BaseObject *inputObject)
 }
 
 
+MinMax CalculateHierarchyBoundingBox(BaseObject *inputObject)
+{
+	MinMax boundingBox;
+
+	// Iterate objects horizontally
+	while (inputObject)
+	{
+		// Get bounding box & add to existing data
+		MinMax tmpBoundingBox = CalculateBoundingBox(inputObject);
+		boundingBox.AddPoints(tmpBoundingBox.GetMin(), tmpBoundingBox.GetMax());
+		
+		// Recurse & add result to existing data
+		tmpBoundingBox = CalculateHierarchyBoundingBox(inputObject->GetDown());
+		boundingBox.AddPoints(tmpBoundingBox.GetMin(), tmpBoundingBox.GetMax());
+		
+		// Continue with next object
+		inputObject = inputObject->GetNext();
+	}
+	
+	// Return bounding box
+	return boundingBox;
+}
+
+
 void TouchAllChildren(BaseObject *startObject)
 {
 	// Cancel if no object
@@ -96,14 +120,19 @@ void TouchAllChildren(BaseObject *startObject)
 	
 	// Get child object
 	BaseObject *childObject = startObject->GetDown();
-	if (!childObject)
-		return;
-	
-	// Touch all children of child object
-	TouchAllChildren(childObject);
 	
 	// Touch child object
-	childObject->Touch();
+	while (childObject)
+	{
+		// Touch all children of child object
+		TouchAllChildren(childObject);
+
+		// Touch child object itself
+		childObject->Touch();
+		
+		// Continue with next object
+		childObject = childObject->GetNext();
+	}
 }
 
 
@@ -115,9 +144,22 @@ Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags)
 	
 	// Get child object
 	BaseObject *childObject = startObject->GetDown();
-	if (!childObject)
-		return false;
+
+	// Ask children for dirtyness
+	Bool dirty = false;
 	
 	// Return IsDirty() of child object and its children
-	return childObject->GetDirty(flags) | IsDirtyChildren(childObject, flags);
+	while (childObject)
+	{
+		// Ask children of child object for their dirtyness
+		dirty |= IsDirtyChildren(childObject, flags);
+		
+		// Ask child object for dirtyness
+		dirty |= childObject->GetDirty(flags);
+		
+		// Continue with next object
+		childObject = childObject->GetNext();
+	}
+	
+	return dirty;
 }
