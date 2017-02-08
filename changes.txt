@@ -2,6 +2,7 @@
 - Support for creating renderinstances
 - Stable support for stack on splines
 - Proper caching & dirty checks
+- Better UI
 - Many bug fixes
 
 0.8
