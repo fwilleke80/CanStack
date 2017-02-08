@@ -1,4 +1,5 @@
-	#include "ws_boundingbox.h"
+#include "ws_boundingbox.h"
+
 
 BaseObject *GetCurrentStateToObject(BaseObject *inputObject, Int32 &nodeType)
 {

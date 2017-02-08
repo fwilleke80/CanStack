@@ -13,9 +13,9 @@
 BaseObject *GetCurrentStateToObject(BaseObject *inputObject, Int32 &nodeType);
 
 /// Calculates the bounding box
-/// @param[in] op The PointObject to calculate the bounding box from
+/// @param[in] inputObject The PointObject to calculate the bounding box from
 /// @return The bounding box in object space
-MinMax CalculateBoundingBox(BaseObject *op);
+MinMax CalculateBoundingBox(BaseObject *inputObject);
 
 
 #endif // WS_BOUNDINGBOX_H__
