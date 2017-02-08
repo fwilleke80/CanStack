@@ -2,7 +2,7 @@
 #include "main.h"
 
 
-#define PLUGIN_VERSION	String("Can Stack 0.8")
+#define PLUGIN_VERSION	String("Can Stack 0.9")
 
 
 Bool PluginStart()
