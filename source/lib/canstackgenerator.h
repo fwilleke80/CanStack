@@ -86,7 +86,7 @@ struct StackParameters
 		       (x1._rowCount == x2._rowCount) &&
 		       (x1._rowHeight == x2._rowHeight) &&
 		       (x1._randomSeed == x2._randomSeed) &&
-					 (x1._randomPos == x2._randomPos) &&
+		       (x1._randomPos == x2._randomPos) &&
 		       (x1._randomRot == x2._randomRot) &&
 		       (x1._basePath == x2._basePath);
 	}
