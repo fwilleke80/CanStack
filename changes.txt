@@ -4,6 +4,7 @@
 - Proper caching & dirty checks
 - Much better random offset
 - Better UI
+- New icon
 - Many bug fixes
 
 0.8
