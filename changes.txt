@@ -1,3 +1,9 @@
+0.9
+- Support for creating renderinstances
+- Stable support for stack on splines
+- Proper caching & dirty checks
+- Many bug fixes
+
 0.8
 - First version
 - Support for simple stacks
