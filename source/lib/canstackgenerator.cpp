@@ -58,10 +58,12 @@ Bool CanStackGenerator::GenerateStack()
 		if (!_splineLengthData->Init(_params._basePath))
 			return false;
 
+		// Calculate relative distance between clones on spline
 		relDistance = 1.0 / (Float)(_params._baseCount - 1);
 	}
 	else
 	{
+		// Create distance between clones
 		distance = _params._baseLength / (Float)_params._baseCount;
 	}
 

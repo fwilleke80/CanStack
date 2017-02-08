@@ -6,8 +6,7 @@
 #include "main.h"
 
 
-// Unique ID obtained from www.plugincafe.com
-const Int32 ID_STACK = 1038758;
+const Int32 ID_STACK = 1038758;	///< Unique ID obtained from www.plugincafe.com
 
 
 /// Stack Object class declaration
@@ -57,6 +56,7 @@ Bool StackObject::Init(GeListNode *node)
 	data->SetUInt32(STACK_RANDOM_SEED, 12345);
 	data->SetFloat(STACK_RANDOM_POS, 0.0);
 	data->SetFloat(STACK_RANDOM_ROT, 0.0);
+	data->SetBool(STACK_RENDERINSTANCES, true);
 
 	// Return super
 	return SUPER::Init(node);
@@ -226,7 +226,7 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 		return nullptr;
 	
 	// Build geometry
-	BaseObject *result = _stackGenerator.BuildStackGeometry(op->GetDown(), op->GetMg(), true);
+	BaseObject *result = _stackGenerator.BuildStackGeometry(op->GetDown(), op->GetMg(), bc->GetBool(STACK_RENDERINSTANCES));
 	if (!result)
 		return nullptr;
 	
