@@ -80,7 +80,7 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 			
 			// Limit row count to base count
 			Int32 baseCount = bc->GetInt32(STACK_BASE_COUNT, 0);
-			Int32 maxRows = bc->GetInt32(STACK_ROWS_COUNT);
+			Int32 maxRows = bc->GetInt32(STACK_ROWS_COUNT, 0);
 			bc->SetInt32(STACK_ROWS_COUNT, Min(maxRows, baseCount));
 			
 			break;
@@ -115,7 +115,7 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 						pointObject.Set(GetCurrentStateToObject(child, objectType));
 						
 						// Calculate radius ourselves
-						rad = CalculateBoundingBox(pointObject).GetRad();
+						rad = CalculateHierarchyBoundingBox(pointObject).GetRad();
 					}
 
 					// If radius is valid
