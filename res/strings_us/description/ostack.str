@@ -12,4 +12,8 @@ STRINGTABLE Ostack
 	STACK_RANDOM_POS			"Random Position";
 	STACK_RENDERINSTANCES	"Create Render Instances";
 	STACK_CMD_FITHEIGHT		"Fit Height";
+
+	STACK_GROUP_STACK			"Stack";
+	STACK_GROUP_ITEMS			"Items";
+	STACK_GROUP_RANDOM		"Random";
 }
