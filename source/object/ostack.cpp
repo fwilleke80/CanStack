@@ -10,43 +10,6 @@
 const Int32 ID_STACK = 1038758;
 
 
-/// Recursively touch all child objects under 'startObject'
-static void TouchAllChildren(BaseObject *startObject)
-{
-	// Cancel if no object
-	if (!startObject)
-		return;
-	
-	// Get child object
-	BaseObject *childObject = startObject->GetDown();
-	if (!childObject)
-		return;
-	
-	// Touch all children of child object
-	TouchAllChildren(childObject);
-	
-	// Touch child object
-	childObject->Touch();
-}
-
-
-/// Recursively call IsDirty() on all child objects under 'startObject'
-static Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags)
-{
-	// Cancel if no object
-	if (!startObject)
-		return false;
-	
-	// Get child object
-	BaseObject *childObject = startObject->GetDown();
-	if (!childObject)
-		return false;
-	
-	// Return IsDirty() of child object and its children
-	return childObject->GetDirty(flags) | IsDirtyChildren(childObject, flags);
-}
-
-
 /// Stack Object class declaration
 class StackObject : public ObjectData
 {

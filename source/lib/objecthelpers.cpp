@@ -86,3 +86,38 @@ MinMax CalculateBoundingBox(BaseObject *inputObject)
 	// Return bounding box
 	return boundingBox;
 }
+
+
+void TouchAllChildren(BaseObject *startObject)
+{
+	// Cancel if no object
+	if (!startObject)
+		return;
+	
+	// Get child object
+	BaseObject *childObject = startObject->GetDown();
+	if (!childObject)
+		return;
+	
+	// Touch all children of child object
+	TouchAllChildren(childObject);
+	
+	// Touch child object
+	childObject->Touch();
+}
+
+
+Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags)
+{
+	// Cancel if no object
+	if (!startObject)
+		return false;
+	
+	// Get child object
+	BaseObject *childObject = startObject->GetDown();
+	if (!childObject)
+		return false;
+	
+	// Return IsDirty() of child object and its children
+	return childObject->GetDirty(flags) | IsDirtyChildren(childObject, flags);
+}

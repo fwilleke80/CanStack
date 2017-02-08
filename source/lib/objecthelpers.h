@@ -17,5 +17,15 @@ BaseObject *GetCurrentStateToObject(BaseObject *inputObject, Int32 &nodeType);
 /// @return The bounding box in object space
 MinMax CalculateBoundingBox(BaseObject *inputObject);
 
+/// Recursively touch all child objects of an object
+/// @param[in] startObject The parent object of the hierarchy that should be touched. All child objects (not startObject itself!) will be touched.
+void TouchAllChildren(BaseObject *startObject);
+
+/// Recursively call IsDirty() on all child objects under 'startObject'
+/// @param[in] startObject The parent object of the hierarchy that should be checked for dirtyness. All child objects (not startObject itself!) will be touched.
+/// @param[in] flags DIRTYFLAGS bitmask to use for IsDirty() calls
+/// @return True if any of the child objects is dirty, otherwise false.
+Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags);
+
 
 #endif // WS_BOUNDINGBOX_H__
