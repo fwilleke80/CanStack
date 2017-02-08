@@ -83,7 +83,7 @@ Bool CanStackGenerator::GenerateStack()
 				// Calculate item's relative offset on the spline
 				Float relOffset = _splineLengthData->UniformToNatural((relDistance * itemIndex) + (relDistance * 0.5 * rowIndex));
 
-				// Calculate position along spline
+				// Calculate global position along spline
 				item->mg.off = _params._basePath->GetSplinePoint(relOffset) + Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, _random.Get11() * _params._randomPos);
 				item->mg = splineMg * item->mg;
 			}
@@ -99,7 +99,7 @@ Bool CanStackGenerator::GenerateStack()
 }
 
 
-BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, const Matrix &mg)
+BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, const Matrix &mg, Bool useRenderInstances)
 {
 	// Create parent object
 	AutoAlloc<BaseObject> resultParent(Onull);
@@ -114,25 +114,65 @@ BaseObject *CanStackGenerator::BuildStackGeometry(BaseObject *originalObject, co
 	else
 		objectToClone = originalObject;
 	
+	// Cancel if nothing to clone
+	if (!objectToClone)
+		return nullptr;
+	
+	// Store object name (plus an extra space)
+	String originalName = objectToClone->GetName() + " ";
+	
+	// Calculate inversion of 'mg' (needed to transform item matrix from global space to generator's local space if path spline is used)
+	Matrix invertedMg = ~mg;
+	
+	// Counter for total number of created new items
+	Int32 newItemCount = 0;
+	
+	// Store pointer to first created object (if using render instances, all successive instances must link to the first object)
+	BaseObject *firstItem = nullptr;
+
 	// Iterate rows in stack
 	for (StackRowArray::Iterator row = _array.Begin(); row != _array.End(); ++row)
 	{
 		// Iterate items in row
 		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item)
 		{
-			// Create clone of original object
-			BaseObject *clone = static_cast<BaseObject*>(objectToClone->GetClone(COPYFLAGS_0, nullptr));
-			if (!clone)
-				return nullptr;
+			BaseObject *newItem = nullptr;
+			
+			// First object always has to be a clone, even if we use render instances
+			if (useRenderInstances && newItemCount > 0)
+			{
+				// Create render instance of original object
+				newItem = BaseObject::Alloc(Oinstance);
+				if (!newItem)
+					return nullptr;
+				
+				// Set instance properties
+				BaseContainer *newItemData = newItem->GetDataInstance();
+				newItemData->SetLink(INSTANCEOBJECT_LINK, firstItem);
+				newItemData->SetBool(INSTANCEOBJECT_RENDERINSTANCE, true);
+			}
+			else
+			{
+				// Create clone of original object
+				newItem = static_cast<BaseObject*>(objectToClone->GetClone(COPYFLAGS_0, nullptr));
+				if (!newItem)
+					return nullptr;
+				
+				// Store pointer to clone (needed in case we use render instances)
+				firstItem = newItem;
+			}
+			
+			// Increase counter
+			newItemCount++;
 			
 			// Set clone position according to item in stack data
 			if (_params._basePath)
-				clone->SetMg(item->mg);
+				newItem->SetMg(invertedMg * item->mg);	// Transform matrix from global to local generator space
 			else
-				clone->SetMl(item->mg);
+				newItem->SetMl(item->mg);								// Simply set local matrix
 			
 			// Insert clone as last child under parent Null
-			clone->InsertUnderLast(resultParent);
+			newItem->InsertUnderLast(resultParent);
 		}
 	}
 	

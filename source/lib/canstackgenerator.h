@@ -81,7 +81,14 @@ struct StackParameters
 	/// @return												True if both are equal, otherwise false.
 	friend Bool operator == (const StackParameters& x1, const StackParameters& x2)
 	{
-		return (x1._baseCount == x2._baseCount) && (x1._baseLength == x2._baseLength) && (x1._rowCount == x2._rowCount) && (x1._rowHeight == x2._rowHeight) && (x1._randomSeed == x2._randomSeed) && (x1._randomPos == x2._randomPos) && (x1._randomRot == x2._randomRot);
+		return (x1._baseCount == x2._baseCount) &&
+		       (x1._baseLength == x2._baseLength) &&
+		       (x1._rowCount == x2._rowCount) &&
+		       (x1._rowHeight == x2._rowHeight) &&
+		       (x1._randomSeed == x2._randomSeed) &&
+					 (x1._randomPos == x2._randomPos) &&
+		       (x1._randomRot == x2._randomRot) &&
+		       (x1._basePath == x2._basePath);
 	}
 };
 
@@ -97,7 +104,11 @@ public:
 	Bool GenerateStack();
 	
 	/// Returns
-	BaseObject *BuildStackGeometry(BaseObject *originalObject, const Matrix &mg);
+	BaseObject *BuildStackGeometry(BaseObject *originalObject, const Matrix &mg, Bool useRenderInstances);
+	
+	// Default constructor
+	CanStackGenerator() : _initialized(false)
+	{ }
 	
 private:
 	/// Resizes the internal stack arrays
