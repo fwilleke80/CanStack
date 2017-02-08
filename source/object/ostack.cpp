@@ -49,14 +49,15 @@ Bool StackObject::Init(GeListNode *node)
 	BaseContainer *data = op->GetDataInstance();
 
 	// Set default attributes
-	data->SetInt32(STACK_BASE_COUNT, 3);
 	data->SetFloat(STACK_BASE_LENGTH, 100.0);
+	data->SetInt32(STACK_BASE_COUNT, 3);
 	data->SetInt32(STACK_ROWS_COUNT, 3);
 	data->SetFloat(STACK_ROWS_HEIGHT, 20.0);
-	data->SetUInt32(STACK_RANDOM_SEED, 12345);
-	data->SetFloat(STACK_RANDOM_POS, 0.0);
-	data->SetFloat(STACK_RANDOM_ROT, 0.0);
 	data->SetBool(STACK_RENDERINSTANCES, true);
+	data->SetUInt32(STACK_RANDOM_SEED, 12345);
+	data->SetFloat(STACK_RANDOM_ROT, 0.0);
+	data->SetFloat(STACK_RANDOM_OFF_X, 0.0);
+	data->SetFloat(STACK_RANDOM_OFF_Z, 0.0);
 
 	// Return super
 	return SUPER::Init(node);

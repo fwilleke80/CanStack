@@ -46,7 +46,7 @@ Bool CanStackGenerator::GenerateStack()
 	{
 		splineMg = _params._basePath->GetMg();
 		
-		// Allocate SplineHelp
+		// Allocate SplineLengthData
 		if (!_splineLengthData)
 		{
 			_splineLengthData.Set(SplineLengthData::Alloc());
@@ -54,10 +54,10 @@ Bool CanStackGenerator::GenerateStack()
 				return false;
 		}
 		
-		// Initialize SplineHelp
+		// Initialize SplineLengthData
 		if (!_splineLengthData->Init(_params._basePath))
 			return false;
-
+		
 		// Calculate relative distance between clones on spline
 		relDistance = 1.0 / (Float)(_params._baseCount - 1);
 	}
@@ -77,22 +77,32 @@ Bool CanStackGenerator::GenerateStack()
 		for (StackItemArray::Iterator item = row->Begin(); item != row->End(); ++item, itemIndex++)
 		{
 			// Compute rotation matrix & set to item
-			item->mg = HPBToMatrix(Vector(_random.Get11() * _params._randomRot, 0.0, 0.0), ROTATIONORDER_HPB);
+			Matrix rotMatrix = HPBToMatrix(Vector(_random.Get11() * _params._randomRot, 0.0, 0.0), ROTATIONORDER_HPB);
+			item->mg = rotMatrix;
 			
 			// Compute matrix offset
 			if (_params._basePath)
 			{
 				// Calculate item's relative offset on the spline
 				Float relOffset = _splineLengthData->UniformToNatural((relDistance * itemIndex) + (relDistance * 0.5 * rowIndex));
+				
+				// Get values we need to compute position of item
+				Vector splinePosition = _params._basePath->GetSplinePoint(relOffset);			// Position of point on spline
+				Vector splineTangent = _params._basePath->GetSplineTangent(relOffset);		// Tangent of point on spline (Z axis for item)
+				Vector splineCrossTangent = Cross(splineTangent, Vector(0.0, 1.0, 0.0));	// Cross product of tangent and Y axis (X axis for item)
 
-				// Calculate global position along spline
-				item->mg.off = _params._basePath->GetSplinePoint(relOffset) + Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, _random.Get11() * _params._randomPos);
+				// Calculate position along spline
+				item->mg.off = splinePosition;
+				item->mg.off += splineCrossTangent * _random.Get11() * _params._randomOffX;	// Randomly offset to the sides of the spline
+				item->mg.off += splineTangent * _random.Get11() * _params._randomOffZ;	// Randomly offset along spline
+				
+				// Transform into global space
 				item->mg = splineMg * item->mg;
 			}
 			else
 			{
 				// Calculate item's position
-				item->mg.off = Vector(_random.Get11() * _params._randomPos, _params._rowHeight * rowIndex, distance * itemIndex + distance * rowIndex * 0.5 + _random.Get11() * _params._randomPos);
+				item->mg.off = Vector(_random.Get11() * _params._randomOffX, _params._rowHeight * rowIndex, distance * itemIndex + distance * rowIndex * 0.5 + _random.Get11() * _params._randomOffZ);
 			}
 		}
 	}

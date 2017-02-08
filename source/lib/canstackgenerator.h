@@ -3,7 +3,6 @@
 
 
 #include "c4d.h"
-#include "lib_splinehelp.h"
 #include "ostack.h"
 
 
@@ -50,12 +49,13 @@ struct StackParameters
 	Int32		_rowCount;					///< How many rows to generate maximum
 	Float 	_rowHeight;					///< Height of rows / items
 	UInt32	_randomSeed;				///< Seed for random number generation
-	Float		_randomPos;					///< Random position
-	Float		_randomRot;					///< Random rotation
+	Float		_randomRot;					///< Random position
+	Float		_randomOffX;				///< Random X offset
+	Float		_randomOffZ;				///< Random Z offset
 	SplineObject	*_basePath;		///< Pointer to path spline
 	
 	/// Default constructor
-	StackParameters() : _baseCount(0), _baseLength(0.0), _rowCount(0), _rowHeight(0.0), _randomSeed(0), _randomPos(0.0), _randomRot(0.0), _basePath(nullptr)
+	StackParameters() : _baseCount(0), _baseLength(0.0), _rowCount(0), _rowHeight(0.0), _randomSeed(0), _randomRot(0.0), _randomOffX(0.0), _randomOffZ(0.0), _basePath(nullptr)
 	{ }
 	
 	// Constructor from BaseContainer
@@ -66,13 +66,14 @@ struct StackParameters
 		_rowCount = bc.GetInt32(STACK_ROWS_COUNT);
 		_rowHeight = bc.GetFloat(STACK_ROWS_HEIGHT);
 		_randomSeed = bc.GetInt32(STACK_RANDOM_SEED);
-		_randomPos = bc.GetFloat(STACK_RANDOM_POS);
 		_randomRot = bc.GetFloat(STACK_RANDOM_ROT);
+		_randomOffX = bc.GetFloat(STACK_RANDOM_OFF_X);
+		_randomOffZ = bc.GetFloat(STACK_RANDOM_OFF_Z);
 		_basePath = static_cast<SplineObject*>(bc.GetObjectLink(STACK_BASE_PATH, &doc));
 	}
 	
 	/// Copy constructor
-	StackParameters(const StackParameters &src) : _baseCount(src._baseCount), _baseLength(src._baseLength), _rowCount(src._rowCount), _rowHeight(src._rowHeight), _randomSeed(src._randomSeed), _randomPos(src._randomPos), _randomRot(src._randomRot), _basePath(src._basePath)
+	StackParameters(const StackParameters &src) : _baseCount(src._baseCount), _baseLength(src._baseLength), _rowCount(src._rowCount), _rowHeight(src._rowHeight), _randomSeed(src._randomSeed), _randomRot(src._randomRot), _randomOffX(src._randomOffX), _randomOffZ(src._randomOffZ), _basePath(src._basePath)
 	{ }
 	
 	/// Checks if two StackParameters objects are equal.
@@ -86,8 +87,9 @@ struct StackParameters
 		       (x1._rowCount == x2._rowCount) &&
 		       (x1._rowHeight == x2._rowHeight) &&
 		       (x1._randomSeed == x2._randomSeed) &&
-		       (x1._randomPos == x2._randomPos) &&
 		       (x1._randomRot == x2._randomRot) &&
+		       (x1._randomOffX == x2._randomOffX) &&
+		       (x1._randomOffZ == x2._randomOffZ) &&
 		       (x1._basePath == x2._basePath);
 	}
 };
@@ -114,7 +116,7 @@ private:
 	/// Resizes the internal stack arrays
 	Bool ResizeStack(Int32 baseCount, Int32 rowCount);
 	
-	/// SplineHelp object required when using a spline as base path
+	/// SplineLengthData object required when using a spline as base path
 	/// Will be allocated only when needed, and freed automatically
 	AutoFree<SplineLengthData> _splineLengthData;
 	
