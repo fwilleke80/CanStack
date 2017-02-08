@@ -93,6 +93,7 @@ Bool CanStackGenerator::GenerateStack()
 
 				// Calculate position along spline
 				item->mg.off = splinePosition;
+				item->mg.off.y += _params._rowHeight * rowIndex;	// Offset to Y direction
 				item->mg.off += splineCrossTangent * _random.Get11() * _params._randomOffX;	// Randomly offset to the sides of the spline
 				item->mg.off += splineTangent * _random.Get11() * _params._randomOffZ;	// Randomly offset along spline
 				
