@@ -10,6 +10,44 @@
 const Int32 ID_STACK = 1038758;
 
 
+/// Recursively touch all child objects under 'startObject'
+static void TouchAllChildren(BaseObject *startObject)
+{
+	// Cancel if no object
+	if (!startObject)
+		return;
+	
+	// Get child object
+	BaseObject *childObject = startObject->GetDown();
+	if (!childObject)
+		return;
+	
+	// Touch all children of child object
+	TouchAllChildren(childObject);
+	
+	// Touch child object
+	childObject->Touch();
+}
+
+
+/// Recursively call IsDirty() on all child objects under 'startObject'
+static Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags)
+{
+	// Cancel if no object
+	if (!startObject)
+		return false;
+	
+	// Get child object
+	BaseObject *childObject = startObject->GetDown();
+	if (!childObject)
+		return false;
+	
+	// Return IsDirty() of child object and its children
+	return childObject->GetDirty(flags) | IsDirtyChildren(childObject, flags);
+}
+
+
+/// Stack Object class declaration
 class StackObject : public ObjectData
 {
 	INSTANCEOF(StackObject, ObjectData)
@@ -17,8 +55,8 @@ class StackObject : public ObjectData
 public:
 	virtual Bool Init(GeListNode *node);
 	virtual Bool Message(GeListNode *node, Int32 type, void *t_data);
-	
 	virtual Bool GetDEnabling(GeListNode *node, const DescID &id, const GeData &t_data, DESCFLAGS_ENABLE flags, const BaseContainer *itemdesc);
+	virtual Bool CopyTo(NodeData *dest, GeListNode *snode, GeListNode *dnode, COPYFLAGS flags, AliasTrans *trn);
 
 	virtual BaseObject* GetVirtualObjects(BaseObject *op, HierarchyHelp *hh);
 
@@ -27,8 +65,13 @@ public:
 		return NewObjClear(StackObject);
 	}
 	
+	
+	StackObject() : _lastPathSpline(nullptr)
+	{ }
+	
 private:
-	CanStackGenerator	_stackGenerator;
+	CanStackGenerator	_stackGenerator;	///< The stack generator
+	BaseObject*				_lastPathSpline;	///< Pointer to the last used path spline object (used for comparison during dirty detection)
 };
 
 
@@ -39,9 +82,11 @@ Bool StackObject::Init(GeListNode *node)
 	if (!node)
 		return false;
 	
+	// Get object's BaseContainer
 	BaseObject *op	= static_cast<BaseObject*>(node);
 	BaseContainer *data = op->GetDataInstance();
 
+	// Set default attributes
 	data->SetInt32(STACK_BASE_COUNT, 3);
 	data->SetFloat(STACK_BASE_LENGTH, 100.0);
 	data->SetInt32(STACK_ROWS_COUNT, 3);
@@ -50,6 +95,7 @@ Bool StackObject::Init(GeListNode *node)
 	data->SetFloat(STACK_RANDOM_POS, 0.0);
 	data->SetFloat(STACK_RANDOM_ROT, 0.0);
 
+	// Return super
 	return SUPER::Init(node);
 }
 
@@ -63,18 +109,19 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 	
 	switch (type)
 	{
-		// Description validation: Make sure STACK_ROWS_COUNT doesn't get higher than possible
+		// Description validation: Make sure STACK_ROWS_COUNT doesn't get higher than STACK_BASE_COUNT
 		case MSG_DESCRIPTION_VALIDATE:
 		{
 			BaseContainer* bc = static_cast<BaseObject*>(node)->GetDataInstance();
 			
+			// Limit row count to base count
 			Int32 baseCount = bc->GetInt32(STACK_BASE_COUNT, 0);
 			Int32 maxRows = bc->GetInt32(STACK_ROWS_COUNT);
 			bc->SetInt32(STACK_ROWS_COUNT, Min(maxRows, baseCount));
 			
 			break;
 		}
-	
+			
 		// Command button pressed
 		case MSG_DESCRIPTION_COMMAND:
 		{
@@ -118,12 +165,12 @@ Bool StackObject::Message(GeListNode *node, Int32 type, void *data)
 					}
 				}
 			}
-			
 			break;
 		}
 			
 	}
 	
+	// Return Super
 	return SUPER::Message(node, type, data);
 }
 
@@ -135,6 +182,7 @@ Bool StackObject::GetDEnabling(GeListNode *node, const DescID &id, const GeData 
 	if (!node)
 		return false;
 	
+	// Get object's BaseContainer
 	BaseObject *op = static_cast<BaseObject*>(node);
 	BaseContainer *bc = op->GetDataInstance();
 	
@@ -145,7 +193,26 @@ Bool StackObject::GetDEnabling(GeListNode *node, const DescID &id, const GeData 
 			return !bc->GetObjectLink(STACK_BASE_PATH, op->GetDocument());
 	}
 	
+	// Return super
 	return SUPER::GetDEnabling(node, id, t_data, flags, itemdesc);
+}
+
+
+// Copy internal data to another StackObject
+Bool StackObject::CopyTo(NodeData *dest, GeListNode *snode, GeListNode *dnode, COPYFLAGS flags, AliasTrans *trn)
+{
+	// Good practice: Check for nullptr
+	if (!dest)
+		return false;
+	
+	// Cast destination node to correct class
+	StackObject *destStack = static_cast<StackObject*>(dest);
+	
+	// Copy data
+	destStack->_lastPathSpline = _lastPathSpline;
+	
+	// Return SUPER
+	return SUPER::CopyTo(dest, snode, dnode, flags, trn);
 }
 
 
@@ -169,24 +236,20 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 	if (!child)
 		return nullptr;
 
-	// Get clone of child object
-	Bool dirty = false;
-	BaseObject *childClone = op->GetAndCheckHierarchyClone(hh, child, HIERARCHYCLONEFLAGS_ASIS, &dirty, nullptr, false);
-	if (!childClone)
-		return nullptr;
+	// Set dependencies for dirty detection
+	op->NewDependenceList();
+	BaseObject *pathSpline = bc->GetObjectLink(STACK_BASE_PATH, doc);
+	if (pathSpline)
+		op->AddDependence(hh, pathSpline);
 	
-	// Object dirty
-	dirty |= op->IsDirty(DIRTYFLAGS_MATRIX|DIRTYFLAGS_DATA);
-	
-	// Linked spline dirty
-	if (bc->GetObjectLink(STACK_BASE_PATH, doc))
-	{
-		dirty |= bc->GetObjectLink(STACK_BASE_PATH, doc)->IsDirty(DIRTYFLAGS_ALL);
-	}
-	
-	// Return cache if already built
+	// Check if we need to recalculate
+	Bool dirty = op->CheckCache(hh) || op->IsDirty(DIRTYFLAGS_DATA|DIRTYFLAGS_CHILDREN)|| (IsDirtyChildren(op, DIRTYFLAGS_DATA|DIRTYFLAGS_CACHE|DIRTYFLAGS_MATRIX)) || (pathSpline != _lastPathSpline) || !op->CompareDependenceList();
 	if (!dirty)
-		return childClone;
+	{
+		// Hide child objects, return previously generated cache
+		TouchAllChildren(op);
+		return op->GetCache(hh);
+	}
 	
 	// Get stack parameters from container
 	StackParameters params(*bc, *doc);
@@ -200,15 +263,23 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 		return nullptr;
 	
 	// Build geometry
-	BaseObject *result = _stackGenerator.BuildStackGeometry(childClone, op->GetMg());
+	BaseObject *result = _stackGenerator.BuildStackGeometry(op->GetDown(), op->GetMg(), true);
 	if (!result)
 		return nullptr;
+	
+	// Hide all child objects
+	TouchAllChildren(op);
+	
+	// Update internal values for later dirty detection
+	_lastPathSpline = pathSpline;
 	
 	// Name parent result object
 	result->SetName(GeLoadString(IDS_STACK));
 	
+	// Indicate that result has changed
 	result->Message(MSG_UPDATE);
 	
+	// Return result
 	return result;
 }
 
