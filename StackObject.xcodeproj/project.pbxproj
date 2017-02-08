@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01DCDE091E440C7100736A61 /* ws_boundingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 01DCDE071E440C7100736A61 /* ws_boundingbox.cpp */; };
-		01DCDE0A1E440C7100736A61 /* ws_boundingbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 01DCDE081E440C7100736A61 /* ws_boundingbox.h */; };
+		0125DD1E1E4B417400AAB05B /* objecthelpers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0125DD1C1E4B417400AAB05B /* objecthelpers.cpp */; };
+		0125DD1F1E4B417400AAB05B /* objecthelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 0125DD1D1E4B417400AAB05B /* objecthelpers.h */; };
 		01DED4A11E41EB24001BFF25 /* canstackgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 01DED49F1E41EB24001BFF25 /* canstackgenerator.cpp */; };
 		01DED4A21E41EB24001BFF25 /* canstackgenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 01DED4A01E41EB24001BFF25 /* canstackgenerator.h */; };
 		A0A66833391837B5E7010000 /* main.h in Headers */ = {isa = PBXBuildFile; fileRef = A0A66833391837B5E7000000 /* main.h */; };
@@ -42,8 +42,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		01DCDE071E440C7100736A61 /* ws_boundingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ws_boundingbox.cpp; path = source/lib/ws_boundingbox.cpp; sourceTree = SOURCE_ROOT; };
-		01DCDE081E440C7100736A61 /* ws_boundingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ws_boundingbox.h; path = source/lib/ws_boundingbox.h; sourceTree = SOURCE_ROOT; };
+		0125DD1C1E4B417400AAB05B /* objecthelpers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = objecthelpers.cpp; path = source/lib/objecthelpers.cpp; sourceTree = SOURCE_ROOT; };
+		0125DD1D1E4B417400AAB05B /* objecthelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = objecthelpers.h; path = source/lib/objecthelpers.h; sourceTree = SOURCE_ROOT; };
 		01DED49D1E41E6BC001BFF25 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
 		01DED49F1E41EB24001BFF25 /* canstackgenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = canstackgenerator.cpp; path = source/lib/canstackgenerator.cpp; sourceTree = SOURCE_ROOT; };
 		01DED4A01E41EB24001BFF25 /* canstackgenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = canstackgenerator.h; path = source/lib/canstackgenerator.h; sourceTree = SOURCE_ROOT; };
@@ -74,8 +74,8 @@
 			children = (
 				01DED4A01E41EB24001BFF25 /* canstackgenerator.h */,
 				01DED49F1E41EB24001BFF25 /* canstackgenerator.cpp */,
-				01DCDE081E440C7100736A61 /* ws_boundingbox.h */,
-				01DCDE071E440C7100736A61 /* ws_boundingbox.cpp */,
+				0125DD1D1E4B417400AAB05B /* objecthelpers.h */,
+				0125DD1C1E4B417400AAB05B /* objecthelpers.cpp */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -156,7 +156,7 @@
 			files = (
 				A0A66833391837B5E7010000 /* main.h in Headers */,
 				01DED4A21E41EB24001BFF25 /* canstackgenerator.h in Headers */,
-				01DCDE0A1E440C7100736A61 /* ws_boundingbox.h in Headers */,
+				0125DD1F1E4B417400AAB05B /* objecthelpers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +236,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0A66833396741B662010000 /* ostack.cpp in Sources */,
-				01DCDE091E440C7100736A61 /* ws_boundingbox.cpp in Sources */,
+				0125DD1E1E4B417400AAB05B /* objecthelpers.cpp in Sources */,
 				01DED4A11E41EB24001BFF25 /* canstackgenerator.cpp in Sources */,
 				A0A6683339E921D362010000 /* main.cpp in Sources */,
 			);

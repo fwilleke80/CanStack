@@ -1,6 +1,6 @@
 #include "c4d.h"
 #include "canstackgenerator.h"
-#include "ws_boundingbox.h"
+#include "objecthelpers.h"
 #include "c4d_symbols.h"
 #include "ostack.h"
 #include "main.h"
