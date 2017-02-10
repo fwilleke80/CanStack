@@ -1,3 +1,6 @@
+0.9.1
+- Fixed bug in caching code that caused a huge performance drop and prevented the camera pivot form working
+
 0.9
 - Support for creating renderinstances
 - Stable support for stack on splines
