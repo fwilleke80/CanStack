@@ -155,7 +155,7 @@ Bool IsDirtyChildren(BaseObject *startObject, DIRTYFLAGS flags)
 		dirty |= IsDirtyChildren(childObject, flags);
 		
 		// Ask child object for dirtyness
-		dirty |= childObject->GetDirty(flags);
+		dirty |= childObject->IsDirty(flags);
 		
 		// Continue with next object
 		childObject = childObject->GetNext();
