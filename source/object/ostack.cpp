@@ -207,7 +207,9 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 		op->AddDependence(hh, pathSpline);
 	
 	// Check if we need to recalculate
-	Bool dirty = op->CheckCache(hh) || op->IsDirty(DIRTYFLAGS_DATA|DIRTYFLAGS_CHILDREN)|| (IsDirtyChildren(op, DIRTYFLAGS_DATA|DIRTYFLAGS_CACHE|DIRTYFLAGS_MATRIX)) || (pathSpline != _lastPathSpline) || !op->CompareDependenceList();
+	Bool dirty = op->CheckCache(hh) || op->IsDirty(DIRTYFLAGS_DATA) || IsDirtyChildren(op, DIRTYFLAGS_DATA|DIRTYFLAGS_CACHE|DIRTYFLAGS_MATRIX) || (pathSpline != _lastPathSpline) || !op->CompareDependenceList();
+	
+	// Return cache if nothing important has changed
 	if (!dirty)
 	{
 		// Hide child objects, return previously generated cache
