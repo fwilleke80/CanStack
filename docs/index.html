@@ -4,31 +4,175 @@
 		<style type="text/css">
 			<!--
 body {
-	background-color: #F3F0EB;
+	background-color: #EFE0CC;
 	font-family: Geneva, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	padding: 0px;
-	margin-top: 20px;
-	margin-right: 3%;
-	margin-bottom: 50px;
-	margin-left: 3%;
+	margin: 1em 1em 1em 1em;
 }
+
+img {
+	border: 1px solid black;
+}
+
+div.maincontent {
+	background-color: white;
+	padding: 1em	;
+	margin: auto;
+	border: 1px dashed black;
+	max-width: 1024;
+}
+
+div.floatright {
+	float: right;
+	padding: 0.5em;
+	background-color: #F5F5F5;
+	border: 1px solid #AAAAAA;
+	-webkit-box-shadow: 10px 10px 30px -10px rgba(0,0,0,0.5);
+	-moz-box-shadow: 10px 10px 30px -10px rgba(0,0,0,0.5);
+	box-shadow: 10px 10px 30px -10px rgba(0,0,0,0.5);
+}
+
+div.indent {
+	margin-left: 1em;
+}
+
+h1 {
+	font-size: 2.5em;
+	font-weight: 700;
+	width: 100%;
+	border-width: 0px 0px 1px 0px;
+	border-style: none none dotted none;
+	border-color: black;
+	padding: 5px 0px 0px 0px;
+	margin: 0px 0px 1em 0px;
+}
+
+h2 {
+	font-size: 14px;
+	font-weight: 700;
+	width: 50%;
+	border-width: 0px 0px 1px 0px;
+	border-style: none none dotted none;
+	border-color: darkgray;
+	padding: 5px 0px 0px 0px;
+	margin: 0px 0px 1em 0px;
+}
+
+h3
+{
+	font-size: 14px;
+	font-weight: 700;
+	width: 50%;
+	padding: 5px 0px 0px 0px;
+	margin: 0.75em 0px 0.5em 0px;
+}
+
+h4
+{
+	font-size: 12px;
+	font-weight: 700;
+	width: 50%;
+	padding: 5px 0px 0px 0px;
+	margin: 0.75em 0px 0.25em 0px;
+}
+
+p {
+	margin: 0px 0px 0.5em 0px;
+}
+
+a {
+	color: #8F806C;
+}
+
+a:hover {
+	color: #DD2200;
+}
+
+a:visited {
+	color: #6F604C;
+}
+
 			-->
 		</style>
-
+		<meta name="keywords" content="CanStack,plugin,cinema,C++,C,free,opensource,parameters,usage,help">
 	</head>
 
 	<body>
-		<h1>CanStack</h1>
-		<p>Blah blah</p>
+		<div class="maincontent">
+			<h1>CanStack</h1>
 
-		<h2>Help</h2>
-		<p>blah...</p>
+			<div class="floatright">
+				<p>Get the sourcecode:<br /><a href="https://github.com/fwilleke80/CanStack">github.com/fwilleke80/CanStack</a></p>
+				<p>Download releases:<br /><a href="https://github.com/fwilleke80/CanStack/releases">github.com/fwilleke80/CanStack/releases</a></p>
+				<p>Licensed under:<br /><a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPL 3.0</a></p>
+				<img src="cans.jpg" width="400px" height="300px" />
+			</div>
 
-		<h3>Parameter XY</h3>
-		<p>It does this and that.</p>
+			<p>CanStack is a free little plugin for <a href="https://www.maxon.net">Maxon Cinema 4D</a> that stacks clones of an input object, forming the typical pyramidical or triangular stack that everybody knows from the supermarket. It can create normal clones or render instances, and it can apply natural variation to the positioning and alignment of the clones.</p>
 
-		<h2>License</h2>
-		<p>Open source, GPL 3.0, blah blah blah...</p>
+			<p>CanStack was written because I needed stacks of objects for a test scene, and I was simply too lazy to stack that many objects manually. Sometimes, writing a plugin is more fun than doing it by hand. Also, this plugin posed a good chance to experiment with generator caching and encapsulating generator functionality in a reusable class.</p>
+
+			<h2>Help</h2>
+			<p>Attributes explained...</p>
+
+			<h3>Stack</h3>
+			<p>This group of parameters focusses on the most basic attributes.</p>
+
+			<div class="indent">
+
+				<h4>Base Path</h4>
+				<p>Link a spline here, if you don't want the stack to be just straight.</p>
+
+				<h4>Base Length</h4>
+				<p>Set the basic length here, if the stack is not defined by a spline.</p>
+
+			</div>
+
+			<h3>Items</h3>
+			<p>This group contains parameters that control how many items the stack will contain and how they behave.</p>
+
+			<div class="indent">
+
+				<h4>Base Count</h4>
+				<p>Defines how many items the base row (lowest row) will contain. All successive rows will depend on this.</p>
+
+				<h4>Max Rows</h4>
+				<p>Defines how many rows the stack has. There can never be more rows than items in the base row.</p>
+
+				<h4>Row Height</h4>
+				<p>Defines distance between two rows.</p>
+
+				<h4>Fit Height</h4>
+				<p>Ideally, the Row Height should be the same as the hight of the object that's being cloned in the stack. If you don't want to look up and set the height yourself, just click this button.</p>
+
+				<h4>Create Render Instances</h4>
+				<p>Instead of creating real clones (copies of the input object), CanStack will create render instances if this option is activated. Render instances will drastically reduce the amout of memory needed for a stack, accelerate viewport display and shorten render times.</p>
+				<p>Long story short: You should keep this activated unless you have a good reason not to.</p>
+
+			</div>
+
+			<h3>Random</h3>
+			<p>This group contains parameters that create natural variation in teh stack, making it look more like hand work instead of being algorithmically generated.</p>
+
+			<div class="indent">
+
+				<h4>Seed</h4>
+				<p>Set any number here to change the results of the random calculations.</p>
+
+				<h4>Random Rotation</h4>
+				<p>Each item will be randomly rotated around its Y axis. This parameter defines the maximum rotation.</p>
+
+				<h4>X Offset</h4>
+				<p>Items will be randomly offset along the generator's X axis. This parameter defines the maximum offset.</p>
+				<p>If a spline is used, items will not simply be offset along the generator's X axis, but <em>away from the spline</em> on the XZ plane.</p>
+
+				<h4>Z Offset</h4>
+				<p>Items will be randomly offset along the generator's Z axis. This parameter defines the maximum offset.</p>
+				<p>If a spline is used, items will not simply be offset along the generator's Z axis, but <em>along the spline</em> on the XZ plane.</p>
+
+			</div>
+
+		</div>
 	</body>
 </html>
