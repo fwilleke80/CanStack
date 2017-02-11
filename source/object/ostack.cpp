@@ -250,8 +250,36 @@ BaseObject* StackObject::GetVirtualObjects(BaseObject *op, HierarchyHelp *hh)
 }
 
 
-// Register object plugin
+//----------------------------------------------------------------------------------------
+///	Plugin help support callback. Can be used to display context sensitive help when the
+/// user selects "Show Help" for an object or attribute. <B>Only return true for your own
+/// object types</B>. All names are always uppercase.
+/// @param[in] opType							Object type name, for example "OATOM".
+/// @param[in] baseType						Name of base object type that opType is derived from, usually the same as opType.
+/// @param[in] group							Name of group in the attribute manager, for example "ID_OBJECTPROPERTIES".
+/// @param[in] property						Name of the object property, for example "ATOMOBJECT_SINGLE";
+/// @return												True if the plugin can display help for this request.
+//----------------------------------------------------------------------------------------
+static Bool CanStackHelpDelegate(const String &opType, const String &baseType, const String &group, const String &property)
+{
+	if (opType == "OSTACK")
+	{
+		Filename filePath = GeGetPluginPath() + "docs" + "index.html";
+		
+		GeExecuteFile(filePath.GetString());
+		
+		return true;
+	}
+	
+	return false;
+}
+
+
+// Register object plugin and help delegate
 Bool RegisterStackObject()
 {
-	return RegisterObjectPlugin(ID_STACK, GeLoadString(IDS_STACK), OBJECT_GENERATOR|OBJECT_INPUT, StackObject::Alloc, "Ostack", AutoBitmap("ostack.tif"), 0);
+	if (!RegisterObjectPlugin(ID_STACK, GeLoadString(IDS_STACK), OBJECT_GENERATOR|OBJECT_INPUT, StackObject::Alloc, "Ostack", AutoBitmap("ostack.tif"), 0))
+		return false;
+	
+	return RegisterPluginHelpDelegate(ID_STACK, CanStackHelpDelegate);
 }
