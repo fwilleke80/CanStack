@@ -15,9 +15,9 @@
      X X X X      X X X      X X      X
     X X X X X    X X X X    X X X    X X    X
  
- 		    5           4         3       2     1
+        5           4         3       2     1
         =           =         =       =     =
-			 15          10         6       3     1
+       15          10         6       3     1
  
 	Notice:
 	- Maximum rowCount is always == baseCount
